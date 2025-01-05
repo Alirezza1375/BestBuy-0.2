@@ -12,6 +12,7 @@ class Product:
         self.price = price
         self.quantity = quantity
         self.active = True
+        self.promotion = None
 
         if not self.name:
             raise ValueError("Product name can not be empty!")
@@ -62,7 +63,10 @@ class Product:
         """
         Returns a string that represents the product
         """
-        return f"{self.name}: ${self.price}, Quantity: {self.quantity}"
+        product_info = f"{self.name}: ${self.price}, Quantity: {self.quantity}"
+        if self.promotion:
+            product_info += f" [Promotion: {self.promotion.name}]"
+        return product_info
 
     def buy(self, quantity):
         """
@@ -73,9 +77,19 @@ class Product:
         """
         if quantity > self.quantity:
             raise Exception("Requested quantity exceeds available stock.")
+        if self.promotion:
+            total_price = self.promotion.apply_promotion(self, quantity)
+        else:
+            total_price = float(self.price * quantity)
         self.quantity -= quantity
         self.active = self.quantity > 0
-        return float(self.price * quantity)
+        return total_price
+
+    def get_promotion(self):
+        return self.promotion
+
+    def set_promotion(self, promotion):
+        self.promotion = promotion
 
 
 class NonStockedProduct(Product):
@@ -119,3 +133,5 @@ class LimitedProduct(Product):
             Overriding the show method to indicate that this is a limited product.
         """
         return f"{self.name} (Limited product, max purchase: {self.max_purchase}): ${self.price}"
+
+
