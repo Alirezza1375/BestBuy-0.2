@@ -2,3 +2,7 @@ New Order:
 MacBook Air M2: 1450, Quantity: 0, Quantity: 50
 Total Price: $72500.00
 ------------------------------
+New Order:
+MacBook Air M2: 1450, Quantity: 0, Quantity: 50
+Total Price: $72500.00
+------------------------------
