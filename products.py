@@ -13,8 +13,12 @@ class Product:
         self.quantity = quantity
         self.active = True
 
-        if self.name == "" or self.price < 0 or self.quantity < 0:
-            raise ValueError("Something went wrong!")
+        if not self.name:
+            raise ValueError("Product name can not be empty!")
+        if self.price < 0:
+            raise ValueError("Price can not be negative!")
+        if self.quantity < 0:
+            raise ValueError("Quantity can not be negative!")
 
     def get_quantity(self):
         """
@@ -29,15 +33,17 @@ class Product:
         Setter function for quantity. If quantity reaches 0, deactivates the product.
         :param quantity:
         """
+
+        if quantity < 0:
+            raise ValueError("quantity can not be negative!")
         self.quantity = quantity
-        if self.quantity == 0:
-            self.active = False
 
     def is_active(self):
         """
         Getter function for active.
         Returns True if the product is active, otherwise False.
         """
+        self.active = self.quantity > 0
         return self.active
 
     def activate(self):
@@ -56,7 +62,7 @@ class Product:
         """
         Returns a string that represents the product
         """
-        return f"{self.name}: {self.price}, Quantity: {self.quantity}"
+        return f"{self.name}: ${self.price}, Quantity: {self.quantity}"
 
     def buy(self, quantity):
         """
@@ -65,10 +71,10 @@ class Product:
         Updates the quantity of the product.
         :param quantity:
         """
-        if self.quantity == 0 or quantity > self.quantity or not self.active:
-            raise Exception("Something went wrong!!")
-        else:
-            self.quantity -= quantity
-            return float(self.price * quantity)
+        if quantity > self.quantity:
+            raise Exception("Requested quantity exceeds available stock.")
+        self.quantity -= quantity
+        self.active = self.quantity > 0
+        return float(self.price * quantity)
 
 

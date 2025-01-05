@@ -31,50 +31,55 @@ def start(product_lst):
             print(f"total of {q.get_total_quantity()} items in the store.")
 
         if cmd == "3":
-            s = store.Store(product_lst)
-            print("Available products:")
-            for idx, p in enumerate(s.get_all_products()):
-                print(f"{idx + 1}. {p.show()}")
 
+            print("When you want to finish order, enter empty string")
             shopping_list = []
 
-            print("When you want to finish the order, press Enter at the 'Which product # prompt.")
-
             while True:
-
+                s = store.Store(product_lst)
+                active_products = s.get_all_products()
+                for idx, p in enumerate(active_products):
+                    print(f"{idx + 1}. {p.show()}")
                 product_num = input("Which product # do you want? ")
                 purchase_quantity = input("What amount do you want? ")
+
                 if product_num == "" and purchase_quantity == "":
                     if not shopping_list:
-                        print("No products selected. returning to menu!")
+                        print("No products selected. Returning to menu.")
                         break
                     try:
                         total_price = s.order(shopping_list)
-                        print(f"Order complete! total_price: ${total_price:.2f}")
+                        print(f"Order complete! Total price: ${total_price:.2f}")
+
                     except Exception as e:
                         print(f"Error processing the order: {e}")
                     break
+
                 try:
                     product_num = int(product_num)
                     purchase_quantity = int(purchase_quantity)
                 except ValueError:
-                    print("Invalid input. please enter valid numbers.")
+                    print("Invalid input. Please enter valid numbers.")
                     continue
 
-                if 1 <= product_num <= len(product_lst):
-                    selected_product = product_lst[product_num - 1]
+                if 1 <= product_num <= len(active_products):
+                    selected_product = active_products[product_num - 1]
                     available_quantity = selected_product.get_quantity()
+
                     if purchase_quantity > available_quantity:
                         print(
-                            f"Not enough stock for {selected_product.name}."
+                            f"Not enough stock for {selected_product.name}. "
                             f"Only {available_quantity} available."
                         )
                         continue
+
                     final_purchase = (selected_product, purchase_quantity)
                     shopping_list.append(final_purchase)
-                    print("Product added to the list!")
+                    print("Product added to list!")
+
+                    active_products = s.get_all_products()
                 else:
-                    print("Invalid product number. please try again!")
+                    print("Invalid product number. Please try again.")
 
         if cmd == "4":
             print("ByeBye")
@@ -82,6 +87,3 @@ def start(product_lst):
 
 
 start(product_list)
-
-
-
