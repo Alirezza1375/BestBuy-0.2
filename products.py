@@ -78,3 +78,44 @@ class Product:
         return float(self.price * quantity)
 
 
+class NonStockedProduct(Product):
+    def __init__(self, name, price):
+        """
+        A product that does not need quantity tracking.
+        """
+        super().__init__(name, price, 0)
+
+    def set_quantity(self, quantity):
+        """
+            Overriding the set_quantity method to prevent changes to the quantity.
+        """
+        raise ValueError("Quantity for non-stock product can not be modified.")
+
+    def show(self):
+        """
+            Overriding the show method to indicate that this is a non-stock product.
+        """
+        return f"{self.name} (Non-stocked product): ${self.price}"
+
+
+class LimitedProduct(Product):
+    def __init__(self, name, price, quantity,  max_purchase):
+        """
+            A product that can be only purchased a limited number of times in an order.
+        """
+        super().__init__(name, price, quantity)
+        self.max_purchase = max_purchase
+
+    def buy(self, quantity):
+        """
+            Overriding the buy method to enforce a limit on how many can be bought in one order.
+        """
+        if quantity > self.max_purchase:
+            raise ValueError(f"Cannot purchase more than {self.max_purchase} of {self.name}")
+        return super().buy(quantity)
+
+    def show(self):
+        """
+            Overriding the show method to indicate that this is a limited product.
+        """
+        return f"{self.name} (Limited product, max purchase: {self.max_purchase}): ${self.price}"
